@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>course file</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'course/css/index.css' %}">
+  </head>
+  <body>
+    <div id="wrapper">
+      <h3>Welcome  {{request.session.user_first_name}}!</h3>
+      <div id="main">
+        <div class="content">
+          <form class="" action="{% url 'course:course' %}" method="POST">
+            {% csrf_token %}
+          <h3>Add Your Class Here</h3>
+          <p>Class Title:<input type="text" name="title"></p>
+          <p>Class Description:<input type="text" name="description"></p>
+          <input id="submit_button" type="submit" value="Add">
+          </form>
+          <h4>Class List:</h4>
+          <table>
+            <tr>
+              <th>Class title</th>
+              <th>Class Description</th>
+              <th>Regist Date</th>
+              <th>Action</th>
+            </tr>
+            {% for course in Course %}
+            <tr>
+              <td>{{course.title}}</td>
+              <td>{{course.description}}</td>
+              <td>{{course.create_at}}</td>
+              <td><a href="{% url 'course:destroy_course' id=course.id %}">Remove</a></td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div><!--content-->
+        <div class="content">
+          <form class="" action="{% url 'course:location' %}" method="POST">
+            {% csrf_token %}
+            <h3>Add Your Class Location</h3>
+            <p>Location:<input type="text" name="location"></p>
+            <input id="submit_button" type="submit" value="Add">
+          </form>
+          <h4>Location List:</h4>
+          <table>
+            <tr>
+              <th>Locations</th>
+              <th>Action</th>
+            </tr>
+            {% for location in Location %}
+            <tr>
+              <td>{{location.location}}</td>
+              <td><a href="{% url 'course:destroy_location' id=location.id %}">Remove</a></td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div><!--close content-->
+      </div><!--main-->
+      <div id="connect">
+        <form class="" action="{% url 'course:connect' %}" method="POST">
+          {% csrf_token %}
+          <h4>Connect class and location with User</h4>
+          <select name="course_id">
+            {% for course in Course %}
+            <option value="{{course.id}}">{{course.title}}</option>
+            {% endfor %}
+          </select>
+          <select  name="location_id">
+            {% for location in Location %}
+            <option value="{{location.id}}">{{location.location}}</option>
+            {% endfor %}
+          </select>
+          <select name="user_id">
+            {% for user in User %}
+            <option value="{{user.id}}">{{user.first_name}}{{user.last_name}}</option>
+            {% endfor %}
+          </select>
+          <input type="submit" value="Connect">
+        </form>
+        <h4>Added List:</h4>
+        <table>
+          <tr>
+            <th>Location</th>
+            <th>Course</th>
+            <th>User</th>
+          </tr>
+          {% for location in Location %}
+            {% for course in location.course.all %}
+            <tr>
+             <td>{{location.location}}</td>
+             <td>{{course.title}}</td>
+               {% for user in course.user.all %}
+               <td>{{user.first_name}},</td>
+               {% endfor %}
+            </tr>
+             {% endfor %}
+          {% endfor %}
+        </table>
+      </div><!--close connect-->
+      <div id="logout">
+        <span><a href="{% url 'logreg:logout' %}">Logout</a></span>
+        <a href="{% url 'course:destroy_database' %}">Clear</a>
+      </div><!--close logout-->
+    </div><!--wrapper-->
+  </body>
+</html>

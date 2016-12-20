@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>main page after login or regist</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id='main_page'>
+        <h3>Welcome  {{request.session.user_first_name}}!</h3>
+        <h3>You just successful login/registration into our page</h3>
+        <a href="{% url 'logreg:logout' %}">Logout</a>
+      </div><!--close main_page-->
+    </div><!--close wrapper-->
+  </body>
+</html>
